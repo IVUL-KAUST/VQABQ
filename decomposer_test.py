@@ -22,8 +22,8 @@ if __name__ == '__main__':
 	#reduc = MDS_Reducer(dimensionality=512, seed=0)
 	#reduc = ISO_Reducer(dimensionality=512)
 	
-	#embdr = SimilarityEmbedder(dataset, reducer = None)
-	embdr = SkipThoughtEmbedder(dataset)
+	embdr = SimilarityEmbedder(dataset, reducer = None)
+	#embdr = SkipThoughtEmbedder(dataset)
 	quesd = QuestionDecomposer(embdr)
 
 	test(quesd, 'is the adult wearing white?', 3)

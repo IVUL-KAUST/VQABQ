@@ -1,4 +1,5 @@
 import numpy as np
+from l0_solver import PPA, plot
 
 class QuestionDecomposer:
 	'''Composes any given question into simpler questions.
@@ -31,8 +32,14 @@ class QuestionDecomposer:
 		b = self.embedder.embed(question)
 		A = self.embedder.embedded_dataset
 
-		#optimize using linear least square and Ax = b return the solution x
-		x, _, _, _ = np.linalg.lstsq(A, b)
+		#optimize ||Ax-b||_2 using linear least squares and return the solution x
+		#x, _, _, _ = np.linalg.lstsq(A, b)
+
+		#optimize 0.5 || Ax-b||_2^2 + l * ||x||_0 using PPA and return the solution x
+		l = 1
+		x = np.random.rand(A.shape[1])
+		x, hist = PPA(x, A, b, l)
+		plot(hist)
 
 		decomposition = [(self.embedder.dataset[i], x[i]) for i in range(len(x))]
 		decomposition = sorted(decomposition, key=lambda x:x[1], reverse=True)

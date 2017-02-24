@@ -1,4 +1,3 @@
-import pickle
 import numpy as np
 from os.path import isfile
 import skpt.skipthoughts as sk
@@ -53,13 +52,13 @@ class SimilarityEmbedder(Embedder):
 		else:
 			self.__compare = SimilarityEmbedder.__jaccard
 		if load and isfile(self._sim_mat_file):
-			sim_mat = pickle.load(open(self._sim_mat_file, 'rb'))
+			sim_mat = np.load(self._sim_mat_file)
 		else:
 			print('generating similarity matrix for the dataset...')
 			sim_mat = self.__generate_similarity_matrix(self.dataset)
 			if save:
 				print('saving generated similarity matrix...')
-				pickle.dump(sim_mat, open(self._sim_mat_file, 'wb'))
+				np.save(self._sim_mat_file, sim_mat)
 		self._sim_mat = sim_mat
 		self.reducer = reducer
 
@@ -121,7 +120,7 @@ class SimilarityEmbedder(Embedder):
 		return sim_mat + np.transpose(sim_mat) - np.identity(N)*np.diagonal(sim_mat)
 
 class SkipThoughtEmbedder(Embedder):
-	_embedded_dataset_file = './models/embedded_dataset.pickle'
+	_embedded_dataset_file = './models/embedded_dataset.npy'
 	def __init__(self, dataset, load=True, save=False):
 		'''Initializes SkipThoughtEmbedder
 
@@ -134,16 +133,15 @@ class SkipThoughtEmbedder(Embedder):
 		self._model = sk.load_model()
 		if load and isfile(self._embedded_dataset_file):
 			print('loading processed dataset...')
-			embedded_dataset = pickle.load(open(self._embedded_dataset_file, "rb"))
+			embedded_dataset = np.load(self._embedded_dataset_file)
 		else:
 			print('preprocessing dataset...')
 			embedded_dataset = sk.encode(self._model, dataset, verbose=False)
 			embedded_dataset = np.transpose(embedded_dataset)
 			if save:
 				print('saving processed dataset...')
-				pickle.dump(embedded_dataset, open(self._embedded_dataset_file, "wb"))
+				np.save(self._embedded_dataset_file, embedded_dataset)
 		self.embedded_dataset = embedded_dataset
-			
 
 	def embed(self, question):
 		encd = sk.encode(self._model, [question], verbose=False)
