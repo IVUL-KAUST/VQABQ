@@ -34,7 +34,7 @@ class QuestionDecomposer:
 		#optimize using linear least square and Ax = b return the solution x
 		x, _, _, _ = np.linalg.lstsq(A, b)
 
-		decomposition = [(self.embedder.dataset[i], x[i][0]) for i in range(len(x))]
+		decomposition = [(self.embedder.dataset[i], x[i]) for i in range(len(x))]
 		decomposition = sorted(decomposition, key=lambda x:x[1], reverse=True)
 
 		return decomposition

@@ -1,7 +1,7 @@
 import json
 from embedder import SimilarityEmbedder
 from decomposer import QuestionDecomposer
-from dimensionality import MDS_Reducer
+from dimensionality import MDS_Reducer, ISO_Reducer
 
 def load_questions(input_file='questions.json'):
 	with open(input_file, 'r') as f:
@@ -19,7 +19,9 @@ def test(quesd, question, number):
 if __name__ == '__main__':
 	dataset = load_questions()[:1000]
 
-	reduc = MDS_Reducer(dimensionality=512, seed=0)
+	#reduc = MDS_Reducer(dimensionality=512, seed=0)
+	reduc = ISO_Reducer(dimensionality=512)
+	
 	embdr = SimilarityEmbedder(dataset, reducer = reduc)
 	quesd = QuestionDecomposer(embdr)
 

@@ -54,9 +54,9 @@ class SimilarityEmbedder(Embedder):
 	def embed(self, question):
 		#compute similarity scores as a column vector
 		scores = np.array([self.__compare(question, q) for q in self.dataset])
-		scores = np.reshape(scores, (len(scores), 1))
 		
 		if self.reducer:
+			scores = np.reshape(scores, (len(scores), 1))
 			#append to similarity matrix
 			sim_mat = np.concatenate((self._sim_mat, scores), axis=1)
 			#append 1 to the end and make it into row vector
@@ -74,7 +74,7 @@ class SimilarityEmbedder(Embedder):
 			return questions_embedding[:,-1]
 		else:
 			self.embedded_dataset = self._sim_mat
-			return scores
+			return np.reshape(scores, (len(scores),))
 
 	@staticmethod
 	def __jaccard(str1, str2):
