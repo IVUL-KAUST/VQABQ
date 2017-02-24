@@ -1,2 +1,4 @@
 data/
+Skip-Thoughts/
 questions.json
+*.pyc
