@@ -1,5 +1,5 @@
 import json
-from embedder import SimilarityEmbedder
+from embedder import SimilarityEmbedder, SkipThoughtEmbedder
 from decomposer import QuestionDecomposer
 from dimensionality import MDS_Reducer, ISO_Reducer
 
@@ -20,9 +20,10 @@ if __name__ == '__main__':
 	dataset = load_questions()[:1000]
 
 	#reduc = MDS_Reducer(dimensionality=512, seed=0)
-	reduc = ISO_Reducer(dimensionality=512)
+	#reduc = ISO_Reducer(dimensionality=512)
 	
-	embdr = SimilarityEmbedder(dataset, reducer = reduc)
+	#embdr = SimilarityEmbedder(dataset, reducer = None)
+	embdr = SkipThoughtEmbedder(dataset)
 	quesd = QuestionDecomposer(embdr)
 
 	test(quesd, 'is the adult wearing white?', 3)

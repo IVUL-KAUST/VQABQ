@@ -1,4 +1,5 @@
 import numpy as np
+import skpt.skipthoughts as sk
 from abc import ABCMeta, abstractmethod
 
 class Embedder(object):
@@ -107,3 +108,15 @@ class SimilarityEmbedder(Embedder):
 			for j in range(i, N):
 				sim_mat[i][j] = self.__compare(questions[i], questions[j])
 		return sim_mat + np.transpose(sim_mat) - np.identity(N)*np.diagonal(sim_mat)
+
+class SkipThoughtEmbedder(Embedder):
+	def __init__(self, dataset):
+		Embedder.__init__(self, dataset=dataset)
+		self._model = sk.load_model()
+		print('preprocessing dataset...')
+		embedded_dataset = sk.encode(self._model, dataset, verbose=False)
+		self.embedded_dataset = np.transpose(embedded_dataset)
+
+	def embed(self, question):
+		encd = sk.encode(self._model, [question], verbose=False)
+		return np.reshape(encd, (encd.shape[1],))
