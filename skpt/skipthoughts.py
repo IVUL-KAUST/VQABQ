@@ -20,8 +20,8 @@ profile = False
 #-----------------------------------------------------------------------------#
 # Specify model and table locations here
 #-----------------------------------------------------------------------------#
-path_to_models = './Skip-Thoughts/'
-path_to_tables = './Skip-Thoughts/'
+path_to_models = './models/Skip-Thoughts/'
+path_to_tables = './models/Skip-Thoughts/'
 #-----------------------------------------------------------------------------#
 
 path_to_umodel = path_to_models + 'uni_skip.npz'

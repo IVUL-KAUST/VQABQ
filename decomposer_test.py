@@ -3,7 +3,7 @@ from embedder import SimilarityEmbedder, SkipThoughtEmbedder
 from decomposer import QuestionDecomposer
 from dimensionality import MDS_Reducer, ISO_Reducer
 
-def load_questions(input_file='questions.json'):
+def load_questions(input_file='./data/questions.json'):
 	with open(input_file, 'r') as f:
 		return json.load(f)
 
@@ -17,7 +17,7 @@ def test(quesd, question, number):
 		print(q[0]+'\t\t'+str(q[1]))
 
 if __name__ == '__main__':
-	dataset = load_questions()[:1000]
+	dataset = load_questions()[:100]
 
 	#reduc = MDS_Reducer(dimensionality=512, seed=0)
 	#reduc = ISO_Reducer(dimensionality=512)

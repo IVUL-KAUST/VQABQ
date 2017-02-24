@@ -2,7 +2,7 @@ import gzip
 import json
 
 path_to_guesswhat = './data/'
-output_file = 'guesswhat_questions.json'
+output_file = './questions.json'
 
 def get_questions(jsonl_gz):
 	print('Extracting \"'+jsonl_gz+'\"...')

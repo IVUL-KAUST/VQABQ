@@ -1,4 +1,3 @@
 data/
-Skip-Thoughts/
-questions.json
+models/Skip-Thoughts/
 *.pyc

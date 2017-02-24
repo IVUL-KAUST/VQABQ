@@ -1,4 +1,6 @@
+import pickle
 import numpy as np
+from os.path import isfile
 import skpt.skipthoughts as sk
 from abc import ABCMeta, abstractmethod
 
@@ -36,7 +38,8 @@ class SimilarityEmbedder(Embedder):
 	Generate a symmetric similarity matrix out of the questions 
 	and reduce the dimensionality of the matrix using MDS(multidimensional scaling).
 	'''
-	def __init__(self, dataset, similarity_measure=None, reducer=None):
+	_sim_mat_file = './models/sim_mat.pickle'
+	def __init__(self, dataset, similarity_measure=None, reducer=None, load=True, save=False):
 		'''Initializes the dataset, similarity measure, dimensionality, and the seed
 		
 		Args:
@@ -49,7 +52,15 @@ class SimilarityEmbedder(Embedder):
 			self.__compare = similarity_measure
 		else:
 			self.__compare = SimilarityEmbedder.__jaccard
-		self._sim_mat = self.__generate_similarity_matrix(self.dataset)
+		if load and isfile(self._sim_mat_file):
+			sim_mat = pickle.load(open(self._sim_mat_file, 'rb'))
+		else:
+			print('generating similarity matrix for the dataset...')
+			sim_mat = self.__generate_similarity_matrix(self.dataset)
+			if save:
+				print('saving generated similarity matrix...')
+				pickle.dump(sim_mat, open(self._sim_mat_file, 'wb'))
+		self._sim_mat = sim_mat
 		self.reducer = reducer
 
 	def embed(self, question):
@@ -110,12 +121,29 @@ class SimilarityEmbedder(Embedder):
 		return sim_mat + np.transpose(sim_mat) - np.identity(N)*np.diagonal(sim_mat)
 
 class SkipThoughtEmbedder(Embedder):
-	def __init__(self, dataset):
+	_embedded_dataset_file = './models/embedded_dataset.pickle'
+	def __init__(self, dataset, load=True, save=False):
+		'''Initializes SkipThoughtEmbedder
+
+		Args:
+			dataset: The name of a json file that contains a list of simple questions (e.g. yes/no question).
+			load: Load the processed dataset if True
+			save: Save the processed dataset if True
+		'''
 		Embedder.__init__(self, dataset=dataset)
 		self._model = sk.load_model()
-		print('preprocessing dataset...')
-		embedded_dataset = sk.encode(self._model, dataset, verbose=False)
-		self.embedded_dataset = np.transpose(embedded_dataset)
+		if load and isfile(self._embedded_dataset_file):
+			print('loading processed dataset...')
+			embedded_dataset = pickle.load(open(self._embedded_dataset_file, "rb"))
+		else:
+			print('preprocessing dataset...')
+			embedded_dataset = sk.encode(self._model, dataset, verbose=False)
+			embedded_dataset = np.transpose(embedded_dataset)
+			if save:
+				print('saving processed dataset...')
+				pickle.dump(embedded_dataset, open(self._embedded_dataset_file, "wb"))
+		self.embedded_dataset = embedded_dataset
+			
 
 	def embed(self, question):
 		encd = sk.encode(self._model, [question], verbose=False)
