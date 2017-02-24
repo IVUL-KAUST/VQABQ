@@ -1,5 +1,4 @@
 import numpy as np
-from sklearn.manifold import MDS
 from abc import ABCMeta, abstractmethod
 
 class Embedder(object):
@@ -36,45 +35,46 @@ class SimilarityEmbedder(Embedder):
 	Generate a symmetric similarity matrix out of the questions 
 	and reduce the dimensionality of the matrix using MDS(multidimensional scaling).
 	'''
-	def __init__(self, dataset, similarity_measure=None, dimensionality=2400, seed=None):
+	def __init__(self, dataset, similarity_measure=None, reducer=None):
 		'''Initializes the dataset, similarity measure, dimensionality, and the seed
 		
 		Args:
 			dataset: The name of a json file that contains a list of simple questions (e.g. yes/no question).
 			similarity_measure: A function that takes two questions and return a score in [0,1].
-			dimensionality: The reduced feature space dimension.
-			seed: Seed to the pseudo-random number generator.
+			reducer: A reducer object. If None is given, no dimensionality reduction is used.
 		'''
 		Embedder.__init__(self, dataset=dataset)
 		if similarity_measure != None:
 			self.__compare = similarity_measure
 		else:
 			self.__compare = SimilarityEmbedder.__jaccard
-		rnd_state = np.random.RandomState(seed=seed)
-		self._mds = MDS(n_components=dimensionality, n_jobs=-1, random_state=rnd_state, dissimilarity="precomputed")
 		self._sim_mat = self.__generate_similarity_matrix(self.dataset)
+		self.reducer = reducer
 
 	def embed(self, question):
 		#compute similarity scores as a column vector
 		scores = np.array([self.__compare(question, q) for q in self.dataset])
 		scores = np.reshape(scores, (len(scores), 1))
 		
-		#append to similarity matrix
-		sim_mat = np.concatenate((self._sim_mat, scores), axis=1)
-		#append 1 to the end and make it into row vector
-		scores = np.transpose(np.concatenate((scores, [[1]]), axis=0))
-		#append to similarity matrix
-		sim_mat = np.concatenate((sim_mat, scores), axis=0)
+		if self.reducer:
+			#append to similarity matrix
+			sim_mat = np.concatenate((self._sim_mat, scores), axis=1)
+			#append 1 to the end and make it into row vector
+			scores = np.transpose(np.concatenate((scores, [[1]]), axis=0))
+			#append to similarity matrix
+			sim_mat = np.concatenate((sim_mat, scores), axis=0)
 
-		#reduce dimensionality using MDS
-		questions_embedding = self._mds.fit(sim_mat).embedding_
-		questions_embedding = np.transpose(questions_embedding)
+			#reduce dimensionality using MDS
+			questions_embedding = self.reducer.reduced(sim_mat)
 
-		#update self._embedded
-		self.embedded_dataset = questions_embedding[:,:-1]
+			#update self._embedded
+			self.embedded_dataset = questions_embedding[:,:-1]
 
-		#return embedded question
-		return questions_embedding[:,-1]
+			#return embedded question
+			return questions_embedding[:,-1]
+		else:
+			self.embedded_dataset = self._sim_mat
+			return scores
 
 	@staticmethod
 	def __jaccard(str1, str2):
