@@ -120,7 +120,7 @@ class SimilarityEmbedder(Embedder):
 		return sim_mat + np.transpose(sim_mat) - np.identity(N)*np.diagonal(sim_mat)
 
 class SkipThoughtEmbedder(Embedder):
-	_embedded_dataset_file = './models/embedded_dataset.npy'
+	_embedded_dataset_file = './models/skipthoughts_dataset.npy'
 	def __init__(self, dataset, load=True, save=False):
 		'''Initializes SkipThoughtEmbedder
 
