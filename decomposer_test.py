@@ -23,7 +23,7 @@ if __name__ == '__main__':
 	#reduc = ISO_Reducer(dimensionality=512)
 	
 	#embdr = SimilarityEmbedder(dataset, reducer = None)
-	embdr = SkipThoughtEmbedder(dataset, load=True)
+	embdr = SkipThoughtEmbedder(dataset)
 	quesd = QuestionDecomposer(embdr)
 
 	test(quesd, 'is the adult wearing white?', 10)
