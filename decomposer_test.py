@@ -17,15 +17,15 @@ def test(quesd, question, number):
 		print(q[0]+'\t\t'+str(q[1]))
 
 if __name__ == '__main__':
-	dataset = load_questions()[:100]
+	dataset = load_questions()
 
 	#reduc = MDS_Reducer(dimensionality=512, seed=0)
 	#reduc = ISO_Reducer(dimensionality=512)
 	
-	embdr = SimilarityEmbedder(dataset, reducer = None)
-	#embdr = SkipThoughtEmbedder(dataset)
+	#embdr = SimilarityEmbedder(dataset, reducer = None)
+	embdr = SkipThoughtEmbedder(dataset, load=True)
 	quesd = QuestionDecomposer(embdr)
 
-	test(quesd, 'is the adult wearing white?', 3)
-	test(quesd, 'is it on my right?', 2)
-	test(quesd, 'is this new?', 4)
+	test(quesd, 'is the adult wearing white?', 10)
+	test(quesd, 'is it on my right?', 10)
+	test(quesd, 'is this new?', 10)
