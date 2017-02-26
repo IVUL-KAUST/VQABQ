@@ -1,8 +1,10 @@
 import gzip
 import json
 
-path_to_guesswhat = './data/'
-output_file = './questions.json'
+#Download the jsonl.gz files from https://guesswhat.ai/download
+
+path_to_guesswhat = './data/guesswhat/'
+output_file = './data/guesswhat_questions.json'
 
 def get_questions(jsonl_gz):
 	print('Extracting \"'+jsonl_gz+'\"...')

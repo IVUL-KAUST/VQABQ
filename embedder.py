@@ -37,8 +37,7 @@ class SimilarityEmbedder(Embedder):
 	Generate a symmetric similarity matrix out of the questions 
 	and reduce the dimensionality of the matrix using MDS(multidimensional scaling).
 	'''
-	_sim_mat_file = './models/sim_mat.pickle'
-	def __init__(self, dataset, similarity_measure=None, reducer=None, load=True, save=False):
+	def __init__(self, dataset, similarity_measure=None, reducer=None, load=None, save=None):
 		'''Initializes the dataset, similarity measure, dimensionality, and the seed
 		
 		Args:
@@ -51,14 +50,14 @@ class SimilarityEmbedder(Embedder):
 			self.__compare = similarity_measure
 		else:
 			self.__compare = SimilarityEmbedder.__jaccard
-		if load and isfile(self._sim_mat_file):
-			sim_mat = np.load(self._sim_mat_file)
+		if load != None and isfile(load):
+			sim_mat = np.load(load)
 		else:
 			print('generating similarity matrix for the dataset...')
 			sim_mat = self.__generate_similarity_matrix(self.dataset)
-			if save:
+			if save != None:
 				print('saving generated similarity matrix...')
-				np.save(self._sim_mat_file, sim_mat)
+				np.save(save, sim_mat)
 		self._sim_mat = sim_mat
 		self.reducer = reducer
 
@@ -120,8 +119,7 @@ class SimilarityEmbedder(Embedder):
 		return sim_mat + np.transpose(sim_mat) - np.identity(N)*np.diagonal(sim_mat)
 
 class SkipThoughtEmbedder(Embedder):
-	_embedded_dataset_file = './models/skipthoughts_dataset.npy'
-	def __init__(self, dataset, load=False, save=False):
+	def __init__(self, dataset, load=None, save=None):
 		'''Initializes SkipThoughtEmbedder
 
 		Args:
@@ -131,16 +129,16 @@ class SkipThoughtEmbedder(Embedder):
 		'''
 		Embedder.__init__(self, dataset=dataset)
 		self._model = sk.load_model()
-		if load and isfile(self._embedded_dataset_file):
+		if load != None and isfile(load):
 			print('loading processed dataset...')
-			embedded_dataset = np.load(self._embedded_dataset_file)
+			embedded_dataset = np.load(load)
 		else:
 			print('preprocessing dataset...')
 			embedded_dataset = sk.encode(self._model, dataset, verbose=False)
 			embedded_dataset = np.transpose(embedded_dataset)
-			if save:
+			if save != None:
 				print('saving processed dataset...')
-				np.save(self._embedded_dataset_file, embedded_dataset)
+				np.save(save, embedded_dataset)
 		self.embedded_dataset = embedded_dataset
 
 	def embed(self, question):

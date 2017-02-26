@@ -1,8 +1,6 @@
 import json
-from embedder import SimilarityEmbedder, SkipThoughtEmbedder
+from embedder import SkipThoughtEmbedder
 from decomposer import QuestionDecomposer
-from dimensionality import MDS_Reducer, ISO_Reducer
-from solver import LassoSolver
 
 def load_questions(input_file='./data/questions.json'):
 	with open(input_file, 'r') as f:
@@ -18,20 +16,14 @@ def test(quesd, question, number):
 		print(q[0]+'\t\t'+str(q[1]))
 
 if __name__ == '__main__':
-	dataset = load_questions()[:100]
+	dataset = load_questions(input_file='./data/vqa_questions.json')
+	embdr = SkipThoughtEmbedder(dataset, load='./models/skipthoughts_vqa_dataset.npy')
+	quesd = QuestionDecomposer(embdr)
 
-	#reduc = MDS_Reducer(dimensionality=512, seed=0)
-	#reduc = ISO_Reducer(dimensionality=512)
-	solver = LassoSolver(l=1)
-	
-	embdr = SimilarityEmbedder(dataset, reducer=None)
-	#embdr = SkipThoughtEmbedder(dataset)
-	quesd = QuestionDecomposer(embdr, solver=solver)
-
-	test(quesd, 'is the adult wearing white?', 10)
-	test(quesd, 'What is your name?', 10)
-	test(quesd, 'Why he does\'nt look happy?', 10)
+	test(quesd, 'What color is the ball?', 10)
+	test(quesd, 'What is her name?', 10)
+	test(quesd, 'Why he doesn\'t look happy?', 10)
 	test(quesd, 'How is the weather?', 10)
-	test(quesd, 'When you will come?', 10)
-	test(quesd, 'is the man in blue eating a bunch of bananas?', 10)
+	test(quesd, 'When will you come back?', 10)
+	test(quesd, 'Is the man in blue eating a bunch of bananas?', 10)
 	test(quesd, 'What is the guy furthest on the left wearing?', 10)
