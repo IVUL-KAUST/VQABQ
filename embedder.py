@@ -121,7 +121,7 @@ class SimilarityEmbedder(Embedder):
 
 class SkipThoughtEmbedder(Embedder):
 	_embedded_dataset_file = './models/skipthoughts_dataset.npy'
-	def __init__(self, dataset, load=True, save=False):
+	def __init__(self, dataset, load=False, save=False):
 		'''Initializes SkipThoughtEmbedder
 
 		Args:

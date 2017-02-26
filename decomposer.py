@@ -1,5 +1,5 @@
 import numpy as np
-from l0_solver import PPA
+from solver import LeastLinearSquaresSolver
 
 class QuestionDecomposer:
 	'''Composes any given question into simpler questions.
@@ -8,10 +8,15 @@ class QuestionDecomposer:
 
 	Attributes:
 		embedder: The embedder.
+		solver: A solver to linearly combine questions.
 	'''
-	def __init__(self, embedder):
+	def __init__(self, embedder, solver=None):
 		'''Initializes QuestionDecomposer.'''
 		self.embedder = embedder
+		if solver == None:
+			self.solver = LeastLinearSquaresSolver()
+		else:
+			self.solver = solver
 
 	def decompose(self, question):
 		'''Decomposes a question into basic questions.
@@ -32,11 +37,7 @@ class QuestionDecomposer:
 		b = self.embedder.embed(question)
 		A = self.embedder.embedded_dataset
 
-		#optimize ||Ax-b||_2 using linear least squares and return the solution x
-		#x, _, _, _ = np.linalg.lstsq(A, b)
-
-		#optimize 0.5 || Ax-b||_2^2 + l * ||x||_0 using PPA and return the solution x
-		x = PPA(A, b, l=0)
+		x = self.solver.solve(A, b)
 
 		decomposition = [(self.embedder.dataset[i], x[i]) for i in range(len(x))]
 		decomposition = sorted(decomposition, key=lambda x:x[1], reverse=True)

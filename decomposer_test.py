@@ -2,6 +2,7 @@ import json
 from embedder import SimilarityEmbedder, SkipThoughtEmbedder
 from decomposer import QuestionDecomposer
 from dimensionality import MDS_Reducer, ISO_Reducer
+from solver import LassoSolver
 
 def load_questions(input_file='./data/questions.json'):
 	with open(input_file, 'r') as f:
@@ -17,15 +18,20 @@ def test(quesd, question, number):
 		print(q[0]+'\t\t'+str(q[1]))
 
 if __name__ == '__main__':
-	dataset = load_questions()
+	dataset = load_questions()[:100]
 
 	#reduc = MDS_Reducer(dimensionality=512, seed=0)
 	#reduc = ISO_Reducer(dimensionality=512)
+	solver = LassoSolver(l=1)
 	
-	#embdr = SimilarityEmbedder(dataset, reducer = None)
-	embdr = SkipThoughtEmbedder(dataset)
-	quesd = QuestionDecomposer(embdr)
+	embdr = SimilarityEmbedder(dataset, reducer=None)
+	#embdr = SkipThoughtEmbedder(dataset)
+	quesd = QuestionDecomposer(embdr, solver=solver)
 
 	test(quesd, 'is the adult wearing white?', 10)
-	test(quesd, 'is it on my right?', 10)
-	test(quesd, 'is this new?', 10)
+	test(quesd, 'What is your name?', 10)
+	test(quesd, 'Why he does\'nt look happy?', 10)
+	test(quesd, 'How is the weather?', 10)
+	test(quesd, 'When you will come?', 10)
+	test(quesd, 'is the man in blue eating a bunch of bananas?', 10)
+	test(quesd, 'What is the guy furthest on the left wearing?', 10)
