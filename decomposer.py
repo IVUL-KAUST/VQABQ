@@ -36,7 +36,7 @@ class QuestionDecomposer:
 		#x, _, _, _ = np.linalg.lstsq(A, b)
 
 		#optimize 0.5 || Ax-b||_2^2 + l * ||x||_0 using PPA and return the solution x
-		x = PPA(A, b)
+		x = PPA(A, b, l=0)
 
 		decomposition = [(self.embedder.dataset[i], x[i]) for i in range(len(x))]
 		decomposition = sorted(decomposition, key=lambda x:x[1], reverse=True)
