@@ -20,9 +20,22 @@ class Solver(object):
 		'''
 		pass
 
+	def solve_all(self, A, b):
+		''' Solves Ax=b with regularization if needed.
+		Args:
+			A: An MxN matrix of feature vectors. 
+			b: An MxK matrix where we have K targets.
+		Returns:
+			The solution x.
+		'''
+		raise NotImplementedError
+
 class LeastLinearSquaresSolver(Solver):
 	def __init__(self):
 		pass
+
+	def solve_all(self, A, b):
+		return self.solve(A,b)
 
 	def solve(self, A, b):
 		#optimize ||Ax-b||_2 using linear least squares and return the solution x
@@ -32,6 +45,10 @@ class LeastLinearSquaresSolver(Solver):
 class LassoSolver(Solver):
 	def __init__(self, l=1):
 		self.l = l
+
+	def solve_all(self, A, b):
+		lasso = Lasso(alpha=self.l)
+		return np.transpose(lasso.fit(A, b).coef_)
 
 	def solve(self, A, b):
 		#optimize (0.5/n_samples) || Ax-b||_2^2 + l * ||x||_1 using Lasso and return the solution x
