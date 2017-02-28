@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import numpy as np
 from solver import LassoSolver
@@ -8,19 +7,19 @@ from decomposer import QuestionDecomposer
 
 #top_N = 10
 lmda = 1e-5
-num_threads = 15
+num_threads = 1000
 dataset_file = './data/vqa_train_val_questions.json'
 questions_file ='./data/vqa_test_questions.json'
 output_folder = './data/basic_vqa_questions/'
 embedded_dataset = './models/skipthoughts_vqa_train_val_dataset.npy'
 
-def load_questions(input_file='./data/questions.json'):
+def load_questions(input_file):
 	with open(input_file, 'r') as f:
 		return json.load(f)
 
 def main(n):
 	dataset = load_questions(dataset_file)
-	questions = load_questions(questions_file)[:1]
+	questions = load_questions(questions_file)
 	chunk_size = int(np.ceil(float(len(questions))/num_threads))
 	questions = questions[n*chunk_size:(n+1)*chunk_size]
 	embedder = SkipThoughtEmbedder(dataset, load=embedded_dataset)
@@ -44,4 +43,4 @@ def main(n):
 	print('done')
 
 if __name__ == '__main__':
-	main(int(sys.argv[1]))
+	main(int(os.environ['SLURM_ARRAY_TASK_ID']))
