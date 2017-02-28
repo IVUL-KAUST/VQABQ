@@ -35,7 +35,7 @@ class LeastLinearSquaresSolver(Solver):
 		pass
 
 	def solve_all(self, A, b):
-		return self.solve(A,b)
+		return self.solve(A,b).T
 
 	def solve(self, A, b):
 		#optimize ||Ax-b||_2 using linear least squares and return the solution x
@@ -48,7 +48,7 @@ class LassoSolver(Solver):
 
 	def solve_all(self, A, b):
 		lasso = Lasso(alpha=self.l)
-		return np.transpose(lasso.fit(A, b).coef_)
+		return lasso.fit(A, b).coef_.T
 
 	def solve(self, A, b):
 		#optimize (0.5/n_samples) || Ax-b||_2^2 + l * ||x||_1 using Lasso and return the solution x

@@ -18,7 +18,17 @@ class QuestionDecomposer:
 		else:
 			self.solver = solver
 
-	def decompose(self, question):
+	def __get_basic_questions(self, x, eps, sort):
+		decomposition = [(self.embedder.dataset[i], float(x[i])) for i in range(len(x))]
+		
+		if sort:
+			decomposition = sorted(decomposition, key=lambda x:x[1], reverse=True)
+		if eps != None:
+			decomposition = [d for d in decomposition if d[1]>eps]
+
+		return decomposition
+
+	def decompose(self, question, eps=None, sort=True):
 		'''Decomposes a question into basic questions.
 
 		Given a question it outputs the decomposed basic questions 
@@ -39,13 +49,9 @@ class QuestionDecomposer:
 
 		x = self.solver.solve(A, b)
 
-		decomposition = [(self.embedder.dataset[i], x[i]) for i in range(len(x))]
-		decomposition = sorted(decomposition, key=lambda x:x[1], reverse=True)
-		decomposition = [d for d in decomposition if d[1]>1e-5]
+		return self.__get_basic_questions(x, eps, sort)
 
-		return decomposition
-
-	def decompose_all(self, questions):
+	def decompose_all(self, questions, eps=None, sort=True):
 		'''Decomposes a list of questions into basic questions.
 
 		Given a question it outputs the decomposed basic questions 
@@ -66,12 +72,11 @@ class QuestionDecomposer:
 		A = self.embedder.embedded_dataset
 
 		x = self.solver.solve_all(A, b)
+		if len(x.shape)>1:
+			decompositions = [0]*len(questions)
+			for i in range(len(questions)):
+				decompositions[i] = self.__get_basic_questions(x[:,i])
 
-		decompositions = [0]*len(questions)
-		for i in range(len(questions)):
-			decomposition = [(self.embedder.dataset[j], x[j, i]) for j in range(x.shape[1])]
-			decomposition = sorted(decomposition, key=lambda x:x[1], reverse=True)
-			decomposition = [d for d in decomposition if d[1]>1e-5]
-			decompositions[i] = decomposition
-
-		return decompositions
+			return decompositions
+		else:
+			return [self.__get_basic_questions(x, eps, sort)]
