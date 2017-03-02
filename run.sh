@@ -7,21 +7,16 @@
 #                                  #
 ####################################
 
-#SBATCH --array=0-6000
+#SBATCH --account=k1216
+#SBATCH --array=0-790
+#SBATCH --ntasks=1
+#SBATCH --partition=workq
 #SBATCH --job-name=VQA    # Job name
 #SBATCH --output=log/%j.out # Stdout (%j expands to jobId)
 #SBATCH --error=log/%j.err # Stderr (%j expands to jobId)
-#SBATCH --workdir=/home/alfadlmm/VQA/
+#SBATCH --workdir=/scratch/alfadlmm/VQA/
 #SBATCH --mem=128G   # memory per NODE
-#SBATCH --time=2-00:00:00   # walltime
-
-export I_MPI_FABRICS=shm:dapl
-
-if [ x$SLURM_CPUS_PER_TASK == x ]; then
-  export OMP_NUM_THREADS=1
-else
-  export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-fi
+#SBATCH --time=1-00:00:00   # walltime
 
 ## LOAD MODULES ##
 module purge		# clean up loaded modules 
