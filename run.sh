@@ -7,10 +7,10 @@
 #                                  #
 ####################################
 
-#SBATCH --array=0-999
+#SBATCH --array=0-6000
 #SBATCH --job-name=VQA    # Job name
-#SBATCH --output=gen.%j.out # Stdout (%j expands to jobId)
-#SBATCH --error=gen.%j.err # Stderr (%j expands to jobId)
+#SBATCH --output=log/%j.out # Stdout (%j expands to jobId)
+#SBATCH --error=log/%j.err # Stderr (%j expands to jobId)
 #SBATCH --workdir=/home/alfadlmm/VQA/
 #SBATCH --mem=128G   # memory per NODE
 #SBATCH --time=2-00:00:00   # walltime
@@ -27,7 +27,7 @@ fi
 module purge		# clean up loaded modules 
 
 # load necessary modules
-module load anaconda
+#module load anaconda
 
 ## RUN YOUR PROGRAM ##
 srun python generate.py
