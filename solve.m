@@ -1,8 +1,8 @@
 close all; clear; clc;
 
-chop = 0.5; %solve `chop`% of the data
+chop = 100; %solve `chop`% of the data
 
-for o=1:ceil(10000/chop)
+for o=1:ceil(100/chop)
     % parameters
     lambda = 1e-5;
     input_file = './AB.mat';
@@ -15,9 +15,9 @@ for o=1:ceil(10000/chop)
     [~, q] = size(B);
     chunk = ceil(q*chop/100);
     if chunk*(o+1) <= q
-        B = B(:, chunk*o+1:chunk*(o+1));
+        B = B(:, (chunk*(o-1)+1):(chunk*o+1));
     else
-        B = B(:, chunk*o+1:q);
+        B = B(:, (chunk*(o-1)+1):q);
     end
 
     [m, n] = size(A);
@@ -36,7 +36,7 @@ for o=1:ceil(10000/chop)
     % solving
     disp(['starting solver...']);
     x = cell(q,1);
-    parfor i=1:q
+    for i=1:q
         disp(['[', datestr(now), ']', ' question #', num2str(i), '...']);
         x{i} = lasso(A,b{i}, 'Lambda', lambda);
     end
