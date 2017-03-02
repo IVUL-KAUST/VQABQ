@@ -8,13 +8,12 @@
 ####################################
 
 #SBATCH --account=k1216
-#SBATCH --array=0-790
-#SBATCH --ntasks=1
+#SBATCH --array=0
+#SBATCH --workdir=/scratch/alfadlmm/VQA/
 #SBATCH --partition=workq
 #SBATCH --job-name=VQA    # Job name
-#SBATCH --output=log/%j.out # Stdout (%j expands to jobId)
-#SBATCH --error=log/%j.err # Stderr (%j expands to jobId)
-#SBATCH --workdir=/scratch/alfadlmm/VQA/
+#SBATCH --output=./log/%j.out # Stdout (%j expands to jobId)
+#SBATCH --error=./log/%j.err # Stderr (%j expands to jobId)
 #SBATCH --mem=128G   # memory per NODE
 #SBATCH --time=1-00:00:00   # walltime
 
@@ -22,7 +21,7 @@
 module purge		# clean up loaded modules 
 
 # load necessary modules
-#module load anaconda
+module load slurm
 
 ## RUN YOUR PROGRAM ##
-srun python generate.py
+srun ../python/Python-2.7.9/python generate.py
