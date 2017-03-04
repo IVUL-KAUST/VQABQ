@@ -6,17 +6,17 @@ from solver import LassoSolver
 from embedder import SkipThoughtEmbedder
 from decomposer import QuestionDecomposer
 
-#top_N = 10
+top_N = 10
 lmda = 1e-5
 dataset_file = './data/vqa_train_val_questions.json'
 questions_file ='./data/vqa_test_questions.json'
 output_folder = './data/basic_vqa_questions/'
 embedded_dataset = './models/skipthoughts_vqa_train_val_dataset.npy'
 
-#thread_id = 0
-#num_threads = 142093
-thread_id = int(os.environ['SLURM_ARRAY_TASK_ID'])
-num_threads = int(os.environ['SLURM_ARRAY_TASK_COUNT'])
+thread_id = 0
+num_threads = 800
+#thread_id = int(os.environ['SLURM_ARRAY_TASK_ID'])
+#num_threads = int(os.environ['SLURM_ARRAY_TASK_COUNT'])
 
 def load_questions(input_file):
 	with open(input_file, 'r') as f:
@@ -41,11 +41,14 @@ decomposer = QuestionDecomposer(embedder, solver=solver)
 
 print('decomposing '+str(len(questions))+' questions...')
 for i in range(len(questions)):
+	file = path+str(i)+'.json'
+	if os.path.isfile(file):
+		continue
 	basic = decomposer.decompose(questions[i])
 	data = {
 		'question':questions[i],
 		'basic':[{'question':q,'score':s} for q, s in basic]#[:top_N]
 	}
 
-	with open(path+str(i)+'.json', 'w') as f:
+	with open(file, 'w') as f:
 		json.dump(data, f)
