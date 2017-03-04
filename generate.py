@@ -6,7 +6,7 @@ from solver import LassoSolver
 from embedder import SkipThoughtEmbedder
 from decomposer import QuestionDecomposer
 
-top_N = 10
+top_N = 20
 lmda = 1e-5
 dataset_file = './data/vqa_train_val_questions.json'
 questions_file ='./data/vqa_test_questions.json'
@@ -14,7 +14,7 @@ output_folder = './data/basic_vqa_questions/'
 embedded_dataset = './models/skipthoughts_vqa_train_val_dataset.npy'
 
 thread_id = 0
-num_threads = 800
+num_threads = 100
 #thread_id = int(os.environ['SLURM_ARRAY_TASK_ID'])
 #num_threads = int(os.environ['SLURM_ARRAY_TASK_COUNT'])
 
@@ -44,10 +44,12 @@ for i in range(len(questions)):
 	file = path+str(i)+'.json'
 	if os.path.isfile(file):
 		continue
+
+	print('question #'+str(thread_id*chunk_size+i)+' ['+str(datetime.now())+']')	
 	basic = decomposer.decompose(questions[i])
 	data = {
 		'question':questions[i],
-		'basic':[{'question':q,'score':s} for q, s in basic]#[:top_N]
+		'basic':[{'question':q,'score':s} for q, s in basic[:top_N]]
 	}
 
 	with open(file, 'w') as f:
