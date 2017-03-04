@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import numpy as np
 from datetime import datetime
@@ -13,10 +14,10 @@ questions_file ='./data/vqa_test_questions.json'
 output_folder = './data/basic_vqa_questions/'
 embedded_dataset = './models/skipthoughts_vqa_train_val_dataset.npy'
 
-thread_id = 0
+num_tasks = 16
 num_threads = 100
-#thread_id = int(os.environ['SLURM_ARRAY_TASK_ID'])
-#num_threads = int(os.environ['SLURM_ARRAY_TASK_COUNT'])
+thread_id = int(os.environ['SLURM_ARRAY_TASK_ID'])
+task_id = int(sys.argv[1])
 
 def load_questions(input_file):
 	with open(input_file, 'r') as f:
@@ -41,6 +42,9 @@ decomposer = QuestionDecomposer(embedder, solver=solver)
 
 print('decomposing '+str(len(questions))+' questions...')
 for i in range(len(questions)):
+	if i%num_tasks != task_id:
+		continue
+
 	file = path+str(i)+'.json'
 	if os.path.isfile(file):
 		continue
