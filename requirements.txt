@@ -6,3 +6,4 @@ scikit-learn==0.18.1
 scipy==0.18.1
 sklearn==0.0
 Theano==0.8.2
+lutorpy==1.3.7
