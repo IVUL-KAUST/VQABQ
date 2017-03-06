@@ -12,7 +12,7 @@ utils = require 'misc.utils'
 require 'xlua'
 
 
-function lod()
+function load()
 	opt = {}
 
 	opt.vqa_model = 'model/vqa_model/model_alternating_train-val_vgg.t7'

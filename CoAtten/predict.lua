@@ -4,7 +4,7 @@ utils = require 'misc.utils'
 
 --img_path = 'vis/demo_img1.jpg'
 --question = 'what is the man doing' 
-function pred(img_path, question, protos)
+function predict(img_path, question, protos)
   -- load the image
   local img = image.load(img_path)
   -- scale the image
