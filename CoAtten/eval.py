@@ -1,3 +1,4 @@
+import os
 from vqa import CoAttenVQA
 
 class VQAEvaluator(object):
@@ -35,7 +36,7 @@ class VQAEvaluator(object):
 		basic = [b['question'] for b in basic]
 		return question1+' '+' '.join(basic)
 
-	def evaluate(self, dataset):
+	def evaluate(self, dataset, image_folder='.'):
 		'''Compute the answers of the dataset and return them in a list
 		
 		Args:
@@ -47,6 +48,7 @@ class VQAEvaluator(object):
 								{'question':'DUMMY','score':0.123}
 							]
 				}]
+			image_folder: The folder where all the images are.
 		Returns:
 			The list of answers as
 				result = [{'question_id':123, 'answer':'DUMMY'}]
@@ -54,7 +56,7 @@ class VQAEvaluator(object):
 		result = [0]*len(dataset)
 		for i in range(len(dataset)):
 			d = dataset[i]
-			image_path = d['image_path']
+			image_path = os.path.join(image_folder, d['image_path'])
 			quesiton = self.__concat(d['question'], d['basic'])
 			answer = self.__vqa.answer(image_path, quesiton)
 			result[i] = {'question_id':d['question_id'], 'answer':answer}
