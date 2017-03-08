@@ -34,7 +34,7 @@ class VQAEvaluator(object):
 			The concatenated question.
 		'''
 		basic = [b['question'] for b in basic]
-		return question1+' '+' '.join(basic)
+		return question+' '+' '.join(basic)
 
 	def evaluate(self, dataset, image_folder='.'):
 		'''Compute the answers of the dataset and return them in a list
