@@ -1,4 +1,5 @@
 import os
+import time
 from vqa import CoAttenVQA
 
 class VQAEvaluator(object):
@@ -53,11 +54,24 @@ class VQAEvaluator(object):
 			The list of answers as
 				result = [{'question_id':123, 'answer':'DUMMY'}]
 		'''
+		skipped = 0
 		result = [0]*len(dataset)
+		start_time = time.time()
 		for i in range(len(dataset)):
+			if i%100 == 0:
+				if i != 0:
+					elapsed_time = time.time() - start_time
+					print('finished '+str(i+1-skipped)+' questions')
+					print('current speed: '+str(100.0/elapsed_time))
+					start_time = time.time()
 			d = dataset[i]
 			image_path = os.path.join(image_folder, d['image_path'])
 			quesiton = self.__concat(d['question'], d['basic'])
-			answer = self.__vqa.answer(image_path, quesiton)
-			result[i] = {'question_id':d['question_id'], 'answer':answer}
+			try:
+				answer = self.__vqa.answer(image_path, quesiton)
+				result[i] = {'question_id':d['question_id'], 'answer':answer}
+			except:	
+				skipped += 1
+				print('skipped question at index #'+str(i))
+		print('finished '+str(i+1-skipped)+' questions and skipped '+str(skipped)+' questions')
 		return result

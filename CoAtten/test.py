@@ -9,15 +9,10 @@ output_file = '/home/modar/VQA/data/dev_test2015_answers.json'
 
 
 def concatenate(question, basic):
-		'''Concatenate the main question with the basic questions
-
-		Args:
-			question: The main question.
-			basic: The list of basic questions with their similarity score.
-		Returns:
-			The concatenated question.
-		'''
+		basic = [b for b in basic if b['score']>0]
 		basic = [b['question'] for b in basic]
+		if basic[0]==question:
+			basic = basic[1:]
 		strn = question+' '+' '.join(basic)
 		strn = strn.split(' ')
 		strn = strn[:26]
