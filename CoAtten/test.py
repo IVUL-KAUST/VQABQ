@@ -41,13 +41,13 @@ def concat2(question, basic):
 	return cont
 
 #pick your concatenation method
-method = concat2
-
-vqa = VQAEvaluator(concatenate=method)
+method = concat0
 
 with open(devtest, 'r') as f:
 	dataset = json.load(f)
-#dataset = dataset[10:100]
+dataset = dataset[10:100]
+
+vqa = VQAEvaluator(concatenate=method)
 
 data = vqa.evaluate(dataset, images_folder)
 with open(output_file, 'w') as f:

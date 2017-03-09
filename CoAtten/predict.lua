@@ -25,6 +25,12 @@ function predict(img_path, question, protos)
 
   -- doing the prediction
 
+  protos.word:evaluate()
+  protos.phrase:evaluate()
+  protos.ques:evaluate()
+  protos.atten:evaluate()
+  protos.cnn:evaluate()
+
   local image_raw = utils.prepro(img, false)
   image_raw = image_raw:cuda()
   ques_encode = ques_encode:cuda()

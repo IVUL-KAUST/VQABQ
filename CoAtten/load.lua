@@ -99,11 +99,5 @@ function load()
 	print('total number of parameters in recursive_attention: ', aparams:nElement())
 	assert(aparams:nElement() == grad_aparams:nElement())
 
-	protos.word:evaluate()
-	protos.phrase:evaluate()
-	protos.ques:evaluate()
-	protos.atten:evaluate()
-	protos.cnn:evaluate()
-
 	return protos
 end
