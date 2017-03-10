@@ -28,4 +28,7 @@ class CoAttenVQA(VQA):
 		self.__protos = load()
 
 	def answer(self, image_path, question):
+		splt = question.split(' ')
+		if len(splt)>26:
+			question = ' '.join(splt[:26])
 		return predict(image_path, question, self.__protos)

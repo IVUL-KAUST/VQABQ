@@ -1,10 +1,14 @@
 import os
 import json
+from nltk.tokenize import word_tokenize
 
 #Download the files from http://www.visualqa.org/download.html
 
 path_to_vqa = './data/vqa/'
 output_file = './data/vqa_questions.json'
+
+def tokenize(sentence):
+	return word_tokenize(str(sentence).lower())
 
 def get_files_paths(directory):
 	files = []
@@ -21,7 +25,7 @@ def get_questions(file):
 	print('Extracting \"'+file+'\"...')
 	with open(file, 'r') as f:
 		data = json.load(f)['questions']
-	data = set([d['question'] for d in data])
+	data = set([' '.join(tokenize(d['question'])) for d in data])
 	print('Extracted questions: '+str(len(data)))
 	return data
 

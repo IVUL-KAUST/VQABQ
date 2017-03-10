@@ -45,7 +45,7 @@ method = concat0
 
 with open(devtest, 'r') as f:
 	dataset = json.load(f)
-dataset = dataset[10:100]
+#dataset = dataset[10:100]
 
 vqa = VQAEvaluator(concatenate=method)
 
@@ -59,7 +59,7 @@ def show(i, view=True):
 	concatenated = method(question, basic)
 	answer = data[i]['answer']
 	print('Question: '+question)
-	print('Concatenated: '+method)
+	print('Concatenated: '+concatenated)
 	print('Answer: '+answer)
 	if view:
 		image_file = images_folder+dataset[i]['image_path']

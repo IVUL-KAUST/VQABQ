@@ -1,10 +1,12 @@
+import re
 import os
 import time
 from vqa import CoAttenVQA
+from nltk.tokenize import word_tokenize
 
 class VQAEvaluator(object):
 	'''Evaluates a VQA dataset of questions and generate the answers'''
-	def __init__(self, vqa=None, concatenate=None):
+	def __init__(self, vqa=None, concatenate=None, tokenize=1):
 		'''Initializes the VQAEvaluator
 
 		Args:
@@ -23,6 +25,10 @@ class VQAEvaluator(object):
 			self.__concat = VQAEvaluator.__concatenate
 		else:
 			self.__concat = concatenate
+		if tokenize == 2:
+			self.__tokenize = VQAEvaluator.__tokenize
+		else:
+			self.__tokenize = VQAEvaluator.__tokenize_nltk
 
 	@staticmethod
 	def __concatenate(question, basic):
@@ -36,6 +42,14 @@ class VQAEvaluator(object):
 		'''
 		basic = [b['question'] for b in basic]
 		return question+' '+' '.join(basic)
+
+	@staticmethod
+	def __tokenize(sentence):
+		return [i for i in re.split(r"([-.\"',:? !\$#@~()*&\^%;\[\]/\\\+<>\n=])", sentence) if i!='' and i!=' ' and i!='\n']
+
+	@staticmethod
+	def __tokenize_nltk(sentence):
+		return word_tokenize(str(sentence).lower())
 
 	def evaluate(self, dataset, image_folder='.'):
 		'''Compute the answers of the dataset and return them in a list
@@ -66,9 +80,14 @@ class VQAEvaluator(object):
 					start_time = time.time()
 			d = dataset[i]
 			image_path = os.path.join(image_folder, d['image_path'])
-			quesiton = self.__concat(d['question'], d['basic'])
+			question = ' '.join(self.__tokenize(d['question']))
+			basic = d['basic']
+			for b in basic:
+				b['question'] = ' '.join(self.__tokenize(b['question']))
+			question = self.__concat(question, basic)
+			question = ' '.join(self.__tokenize(question))
 			try:
-				answer = self.__vqa.answer(image_path, quesiton)
+				answer = self.__vqa.answer(image_path, question)
 				result[i] = {'question_id':d['question_id'], 'answer':answer}
 			except:	
 				skipped += 1
