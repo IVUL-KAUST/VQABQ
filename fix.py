@@ -32,7 +32,7 @@ def check(data):
 		elif len(d.keys())!=2:
 			print(d)
 
-#fix('data/dev_test2015_answers_0.json')
-#fix('data/dev_test2015_answers_1.json')
-#fix('data/dev_test2015_answers_2.json')
-
+fix('data/devtest/dev_test2015_answers_1.json')
+fix('data/devtest/dev_test2015_answers_2.json')
+fix('data/devtest/dev_test2015_answers_3.json')
+fix('data/devtest/dev_test2015_answers_4.json')

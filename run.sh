@@ -8,14 +8,14 @@
 ####################################
 
 #SBATCH --account=k1216
-#SBATCH --array=0-799
+#SBATCH --array=0-798
 #SBATCH --partition=workq
 #SBATCH --workdir=/scratch/alfadlmm/
 #SBATCH --job-name=VQA    # Job name
 #SBATCH --output=./log/%j.out # Stdout (%j expands to jobId)
 #SBATCH --error=./log/%j.err # Stderr (%j expands to jobId)
 #SBATCH --mem=120G   # memory per NODE
-#SBATCH --time=2-00:00:00   # walltime
+#SBATCH --time=09:00:00   # walltime
 
 ## LOAD MODULES ##
 module purge		# clean up loaded modules 
@@ -29,9 +29,9 @@ export PATH="/scratch/alfadlmm/miniconda2/bin:$PATH"
 source activate vqa
 
 ## RUN YOUR PROGRAM ##
-for i in {0..7}
+for i in {0..14}
 do
-	srun python generate.py $i &
+	srun python solve.py $i &
 done
 
 wait

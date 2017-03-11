@@ -5,7 +5,7 @@ from evaluate import VQAEvaluator
 
 images_folder = '/home/modar/test2015/'
 devtest = '/home/modar/VQA/data/OpenEnded_mscoco_test-dev2015_basic_questions.json'
-output_file = '/home/modar/VQA/data/dev_test2015_answers_4.json'
+output_file = '/home/modar/VQA/data/devtest/dev_test2015_answers_4.json'
 
 
 def concat0(question, basic):
@@ -20,10 +20,7 @@ def concat1(question, basic):
 	basic = [b['question'] for b in basic]
 	if basic[0]==question:
 		basic = basic[1:]
-	strn = question+' '+' '.join(basic)
-	strn = strn.split(' ')
-	strn = strn[:26]
-	return ' '.join(strn)
+	return question+' '+' '.join(basic)
 
 def concat2(question, basic):
 	#Take the questions that is not
@@ -34,11 +31,8 @@ def concat2(question, basic):
 	if basic[0]==question:
 		basic = basic[1:]
 	strn = question+' '+' '.join(basic)
-	strn = set(strn.split(' '))
-	cont = strn.pop()
-	for i in range(min(25, len(strn))):
-		cont = cont+' '+strn.pop()
-	return cont
+	strn = list(set(strn.split(' ')))
+	return ' '.join(strn)
 
 def concat3(question, basic):
 	#Concatenate the top basic questions without the main question
