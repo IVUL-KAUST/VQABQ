@@ -5,7 +5,7 @@ from evaluate import VQAEvaluator
 
 images_folder = '/home/modar/test2015/'
 devtest = '/home/modar/VQA/data/OpenEnded_mscoco_test-dev2015_basic_questions.json'
-output_file = '/home/modar/VQA/data/dev_test2015_answers.json'
+output_file = '/home/modar/VQA/data/dev_test2015_answers_4.json'
 
 
 def concat0(question, basic):
@@ -40,8 +40,24 @@ def concat2(question, basic):
 		cont = cont+' '+strn.pop()
 	return cont
 
+def concat3(question, basic):
+	#Concatenate the top basic questions without the main question
+	basic = [b for b in basic if b['score']>0]
+	basic = [b['question'] for b in basic]
+	return ' '.join(basic)
+
+def concat4(question, basic):
+	#leave the main question alone 
+	#and concatenate the union of the words in the basic questions
+	basic = [b for b in basic if b['score']>0]
+	basic = [b['question'] for b in basic]
+	strn = ' '.join(basic)
+	strn = list(set(strn.split(' ')))
+	return ' '.join(strn)
+
+
 #pick your concatenation method
-method = concat0
+method = concat4
 
 with open(devtest, 'r') as f:
 	dataset = json.load(f)
