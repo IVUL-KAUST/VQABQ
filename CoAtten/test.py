@@ -5,8 +5,7 @@ from evaluate import VQAEvaluator
 
 images_folder = '/home/modar/test2015/'
 devtest = '/home/modar/VQA/data/OpenEnded_mscoco_test-dev2015_basic_questions.json'
-output_file = '/home/modar/VQA/data/devtest/dev_test2015_answers_4.json'
-
+output_file = '/home/modar/VQA/data/devtest/dev_test2015_answers_5.json'
 
 def concat0(question, basic):
 	#No concatenation
@@ -49,9 +48,32 @@ def concat4(question, basic):
 	strn = list(set(strn.split(' ')))
 	return ' '.join(strn)
 
+def concat5(question, basic):
+	#the main question with the top question only
+	basic = [b for b in basic if b['score']>0]
+	basic = [b['question'] for b in basic]
+	if basic[0]==question:
+		if len(basic)>=2:
+			basic = basic[1]
+		else:
+			basic = ''
+	else:
+		basic = basic[0]
+	return question+' '+basic
+
+def concat6(question, basic):
+	#the main question with the top two questions
+	basic = [b for b in basic if b['score']>0]
+	basic = [b['question'] for b in basic]
+	if basic[0]==question:
+		basic = basic[1:3]
+	else:
+		basic = basic[0:2]
+	return question+' '+' '.join(basic)
+
 
 #pick your concatenation method
-method = concat4
+method = concat5
 
 with open(devtest, 'r') as f:
 	dataset = json.load(f)
