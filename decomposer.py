@@ -1,5 +1,5 @@
 import numpy as np
-from solver import LeastLinearSquaresSolver
+from solver import LinearLeastSquaresSolver
 
 class QuestionDecomposer:
 	'''Composes any given question into simpler questions.
@@ -14,7 +14,7 @@ class QuestionDecomposer:
 		'''Initializes QuestionDecomposer.'''
 		self.embedder = embedder
 		if solver == None:
-			self.solver = LeastLinearSquaresSolver()
+			self.solver = LinearLeastSquaresSolver()
 		else:
 			self.solver = solver
 

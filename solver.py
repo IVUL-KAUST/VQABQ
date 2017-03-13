@@ -30,7 +30,7 @@ class Solver(object):
 		'''
 		raise NotImplementedError
 
-class LeastLinearSquaresSolver(Solver):
+class LinearLeastSquaresSolver(Solver):
 	def __init__(self):
 		pass
 
