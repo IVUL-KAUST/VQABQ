@@ -5,7 +5,7 @@ from evaluate import VQAEvaluator
 
 images_folder = '/home/modar/test2015/'
 devtest = '/home/modar/VQA/data/OpenEnded_mscoco_test-dev2015_basic_questions.json'
-output_file = '/home/modar/VQA/data/devtest/dev_test2015_answers_5.json'
+output_file = '/home/modar/VQA/data/devtest/dev_test2015_answers_7_3.json'
 
 def concat0(question, basic):
 	#No concatenation
@@ -71,9 +71,45 @@ def concat6(question, basic):
 		basic = basic[0:2]
 	return question+' '+' '.join(basic)
 
+def concat7(question, basic):
+	#the main questions with the top 3 questions using thresholding
+	
+	#for the 1st top question:
+	##the average is 0.43092766002311983
+	##the standard deviation is 0.30615083368834917
+	##we are trying avg(+,-)(0,std) : [0.43, 0.74, 0.12]
+	##the accuracy for each s1 value with s2=s3=1 : [59.46, 59.42, ?]
+	s1 = 0.12
+	#for the 2nd top question:
+	##the average is ?
+	##the standard deviation is ?
+	##we are trying avg(+,-)(std,0) = [?, ?, ?]
+	s2 = 1
+	#for the 3rd top question:
+	##the average is ?
+	##the standard deviation is ?
+	##we are trying avg(+,-)(0,std) = [?, ?, ?]
+	s3 = 1
+	basic = [b for b in basic if b['score']>0]
+	if basic[0]['question']==question:
+		basic = basic[1:4]
+	else:
+		basic = basic[0:3]
+	append = ''
+	if len(basic)>0:
+		if basic[0]['score']>s1:
+			append = ' '+basic[0]['question']
+			if len(basic)>1:
+				if basic[1]['score']/basic[0]['score']>s2:
+					append += ' '+basic[1]['question']
+					if len(basic)>2:
+						if basic[2]['score']/basic[1]['score']>s2:
+							append += ' '+basic[2]['question']
+	return question+append
+
 
 #pick your concatenation method
-method = concat5
+method = concat7
 
 with open(devtest, 'r') as f:
 	dataset = json.load(f)
