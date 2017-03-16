@@ -330,27 +330,36 @@ train=False, validation=False, test=False, dev=False, open_ended=False, multiple
 
 	return dataset
 
-def get_embedding(dataset, chop=1, output=None, force=False):
+def get_embedding(dataset, chunks=1, output=None, force=False):
 	"""Merge the embeddings of the entire dataset.
 
 	Args:
 		dataset (dict): The dataset.
-		chop (int, optional): Total number of chunks. Defaults to 1.
-		output (str, optional): Path to NPY file or to a directory if `chop`>1. Defaults to None.
+		chunks (int, optional): Total number of chunks. Defaults to 1.
+		output (str, optional): Path to NPY file or to a directory if `chunks`>1. Defaults to None.
 		force (bool, optional): Forces embedding the questions. Defaults to False.
 
 	Returns:
 		numpy.ndarray: The embeddings as a matrix.
 	"""
-	pass
-	'''if verbose: print('[Extract embedding]')
-	if chop > 1:
+	if verbose: print('[Extract embedding]')
+	if chunks > 1:
 		if not os.path.exists(output):
 			if verbose: print('creating folder `'+output+'`...')
 			os.makedirs(output)
+		else:
+			files = os.listdir(output)
+			if not force and len(files)>=chunks:
+				try:
+					result = [0]*chunks
+					for i in range(chunks):
+						result[i] = np.load(os.path.join(output, str(i)+'.npy'))
+					return result
+				except:
+					pass
 	else:
-		if not force and output_file and os.path.isfile(output_file):
-			return np.load(output_file)
+		if not force and output and os.path.isfile(output):
+			return np.load(output)
 
 	m = dataset['data']['_embedding'][0].shape[0]
 	N = sum([l for l in dataset['lengths']])
@@ -361,16 +370,25 @@ def get_embedding(dataset, chop=1, output=None, force=False):
 			indecies[n] = i
 			n += 1
 	indecies = indecies[:n]
+	items_per_chunk = np.ceil(float(n)/chunks)
 
-	mat = np.zeros(m, n)
-	for i in range(N):
-		if dataset['data']['_copy_of'][i]==i:
-			mat[:,i] = dataset['data']['_embedding'][i]
+	result = [0]*chunks
+	for c in range(chunks):
+		mat = np.zeros(m, items_per_chunk)
+		for i in range(c*items_per_chunk, min((c+1)*items_per_chunk, N)):
+			if dataset['data']['_copy_of'][i]==i:
+				mat[:,i-c*items_per_chunk] = dataset['data']['_embedding'][i]
+		result[c] = mat
 
-	if output_file:
-		np.save(output_file, mat)
-
-	return mat'''
+	if len(result)==1:
+		if output:
+			np.save(output, result[0])
+		return result[0]
+	else:
+		if output:
+			for i in range(len(result)):
+				np.save(os.path.join(output, str(i)+'.npy'), result[i])
+		return result
 
 '''
 #decompose an embedded question into basic questions given questions and their embeddings

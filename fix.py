@@ -50,3 +50,5 @@ def check(data):
 #fix('data/devtest/dev_test2015_answers_7_10.json')
 #fix('data/devtest/dev_test2015_answers_7_11.json')
 #fix('data/devtest/dev_test2015_answers_7_12.json')
+#fix('data/devtest/dev_test2015_answers_7_Residual_12.json')
+fix('data/devtest/dev_test2015_answers_7_Residual_0.json')

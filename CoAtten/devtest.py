@@ -4,28 +4,31 @@ import json
 import time
 from nltk.tokenize import word_tokenize
 import lutorpy as lua
+
+lua.execute('model_type = "VGG"') # "VGG" or "Residual"
+model_type = lua.eval('model_type')
 require('combined_answering')
 
 number_of_experiments = 15
-#expr 01: ?%
-#expr 02: ?%
-#expr 03: ?%
-#expr 04: ?%
-#expr 05: ?%
-#expr 06: ?%
-#expr 07: ?%
-#expr 08: ?%
-#expr 09: ?%
-#expr 10: ?%
-#expr 11: ?%
-#expr 12: ?%
-#expr 13: ?%
-#expr 14: ?%
-#expr 15: ?%
+#expr 8_VGG_01: 50.81%
+#expr 8_VGG_02: ?%
+#expr 8_VGG_03: ?%
+#expr 8_VGG_04: ?%
+#expr 8_VGG_05: ?%
+#expr 8_VGG_06: ?%
+#expr 8_VGG_07: ?%
+#expr 8_VGG_08: ?%
+#expr 8_VGG_09: ?%
+#expr 8_VGG_10: ?%
+#expr 8_VGG_11: ?%
+#expr 8_VGG_12: ?%
+#expr 8_VGG_13: ?%
+#expr 8_VGG_14: ?%
+#expr 8_VGG_15: ?%
 
 images_folder = '/home/modar/test2015/'
 devtest = '/home/modar/VQA/data/OpenEnded_mscoco_test-dev2015_basic_questions.json'
-output_file = '/home/modar/VQA/data/devtest/dev_test2015_answers_8_{}.json'
+output_file = '/home/modar/VQA/data/devtest/dev_test2015_answers_8_{}_{}.json'
 
 def _clean(sentence):
 	return ' '.join(word_tokenize(str(sentence).lower()))
@@ -101,23 +104,28 @@ def evaluate():
 			questions = lua.eval(questions)
 			answer = get_answer(image_path, questions, expr)
 			result[i] = {'question_id':d['question_id'], 'answer':answer}
-		except:
-			skipped += 1
-			result[i] = {'question_id':d['question_id'], 'answer':'NOTGIVENTON'}#just dummy answer
-			print('skipped question at index #'+str(i))
-		#except Exception, err:
-		#	import traceback
-		#	traceback.print_exc()
-		#	exit()	
+		#except:
+		#	skipped += 1
+		#	result[i] = {'question_id':d['question_id'], 'answer':'NOTGIVENTON'}#just dummy answer
+		#	print('skipped question at index #'+str(i))
+		except Exception, err:
+			import traceback
+			traceback.print_exc()
+			exit()	
 	_prog('current speed: '+str(round(100/elapsed_time,2)), i, len(dataset))
 	print('finished '+str(i+1-skipped)+' questions and skipped '+str(skipped)+' questions')
 
-	with open(output_file.format(expr), 'w') as f:
+	with open(output_file.format(model_type, expr), 'w') as f:
 		json.dump(result, f)
 
 if __name__ == '__main__':
-	for i in range(1,number_of_experiments+1):
-		if not os.path.isfile(output_file.format(i)):
+	if len(sys.argv)>1:
+		exprs = [int(e) for e in sys.argv[1:]]
+	else:
+		exprs = range(1,number_of_experiments+1)
+	for i in exprs:
+		if not os.path.isfile(output_file.format(model_type, i)):
+			print('Working on experiment #'+str(i))
 			expr = i
 			evaluate()
 			lua.eval('collectgarbage()')
