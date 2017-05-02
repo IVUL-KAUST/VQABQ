@@ -1,7 +1,7 @@
 import os
 import json
 
-basic_questions_folder = '../data/basic_vqa_questions/'
+basic_questions = '../data/basic_vqa_questions/basic.json'
 image_folder = '/home/modar/test2015/'
 dataset_file = '/home/modar/test.json'
 output_file = '../data/test.json'
@@ -19,18 +19,17 @@ def get_files(folder):
 images = os.listdir(image_folder)
 def get_path(image_id):
 	global images
-	image_id = str(image_id)+'.'
-	for img in images:
-		if image_id in img:
-			return img
-	return None
+	image_id = str(image_id)
+	image_id = '0'*(12-len(image_id))+image_id
+	#for img in images:
+	#	if image_id in img:
+	#		return img
+	#return None
+	return 'COCO_test2015_'+image_id+'.jpg'
 
 print('preparing the basic questions dataset...')
-basics_files = get_files(basic_questions_folder)
-basics = [0]*len(basics_files)
-for i in range(len(basics_files)):
-	with open(basics_files[i], 'r') as f:
-		basics[i] = json.load(f)
+with open(basic_questions, 'r') as f:
+	basics = json.load(f)
 def get_basic(question):
 	global basics
 	for b in basics:
@@ -39,7 +38,7 @@ def get_basic(question):
 	return None
 
 def combine():
-	global dataset_file, basic_questions_folder
+	global dataset_file
 	with open(dataset_file, 'r') as f:
 		dataset = json.load(f)
 	dataset = dataset['questions']

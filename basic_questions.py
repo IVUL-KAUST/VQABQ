@@ -13,6 +13,7 @@ A_file = './models/A.npy'
 B_path = './models/B/'
 A_data_file = './data/A.json'
 B_data_file = './data/B.json'
+C_data_file = './data/C.json'
 
 #---------------------------------------------------------------------------
 #	Utility Functions
@@ -28,14 +29,20 @@ preprocess(dataset, output_file=vqa_processed_questions_file, force=False, verbo
 embed(dataset=dataset, output_file=vqa_embedded_questions_file, force=False, verbose=True)
 
 #get the set of real train+val questions
-A_data = vqa_subset(vqa_embedded_questions_file, output_file=A_data_file, force=False, real=True, train=True, validation=True, open_ended=True)
+#A_data = vqa_subset(vqa_embedded_questions_file, output_file=A_data_file, force=False, real=True, train=True, validation=True, open_ended=True)
 #use them as the entire set of questions
-A = get_embedding(A_data, chunks=1, output=A_file, force=False)
+#A = get_embedding(A_data, chunks=1, output=A_file, force=False)
 
 #get the set of real dev-test questions
-B_data = vqa_subset(vqa_embedded_questions_file, output_file=B_data_file, force=False,
+#B_data = vqa_subset(vqa_embedded_questions_file, output_file=B_data_file, force=False,
+#												abstract=False, real=True,
+#												train=False, validation=False, test=False, dev=True, 
+#												open_ended=True, multiple_choice=False)
+#use them as target questions
+#B = get_embedding(B_data, chunks=800*8, output=B_path, force=False)
+
+
+C_data = vqa_subset(vqa_embedded_questions_file, output_file=C_data_file, force=False,
 												abstract=False, real=True,
 												train=False, validation=False, test=False, dev=True, 
-												open_ended=True, multiple_choice=False)
-#use them as target questions
-B = get_embedding(B_data, chunks=800*8, output=B_path, force=False)
+												open_ended=False, multiple_choice=True)

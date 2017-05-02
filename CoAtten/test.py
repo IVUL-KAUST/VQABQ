@@ -4,8 +4,8 @@ import matplotlib.image as mpimg
 from evaluate import VQAEvaluator
 
 images_folder = '/home/modar/test2015/'
-devtest = '/home/modar/VQA/data/OpenEnded_mscoco_test-dev2015_basic_questions.json'
-output_file = '/home/modar/VQA/data/devtest/dev_test2015_answers_7_11.json'
+devtest = '/home/modar/VQA/data/OpenEnded_mscoco_test2015_basic_questions.json'
+output_file = '/home/modar/VQA/data/test/vqa_OpenEnded_mscoco_test2015_0_VGG_results.json'
 
 def concat0(question, basic):
 	#No concatenation
@@ -113,13 +113,13 @@ def concat7(question, basic):
 				if basic[1]['score']/basic[0]['score']>s2:
 					append += ' '+basic[1]['question']
 					if len(basic)>2:
-						if basic[2]['score']/basic[1]['score']>s2:
+						if basic[2]['score']/basic[1]['score']>s3:
 							append += ' '+basic[2]['question']
 	return question+append
 
 
 #pick your concatenation method
-method = concat7
+method = concat0
 
 with open(devtest, 'r') as f:
 	dataset = json.load(f)

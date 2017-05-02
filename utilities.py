@@ -258,6 +258,8 @@ def embed(dataset, output_file=None, force=False, verbose=True):
 	if verbose: print('[Embed VQA dataset]')
 	if not force and output_file and os.path.isfile(output_file):
 		_overwrite_dict(dataset, _load(output_file))
+		for i in range(len(dataset['data'])):
+			dataset['data']['_embedded'][i] = np.array(dataset['data']['_embedded'][i])
 		return
 
 	if force or dataset['data'].get('_embedded', None) == None:
@@ -275,7 +277,11 @@ def embed(dataset, output_file=None, force=False, verbose=True):
 
 	if output_file:
 		if verbose: print('saving to `'+output_file+'`...')
+		for i in range(len(dataset['data']['_embedded'])):
+			dataset['data']['_embedded'][i] = [float(x) for x in dataset['data']['_embedded'][i]]
 		_save(dataset, output_file)
+		for i in range(len(dataset['data']['_embedded'])):
+			dataset['data']['_embedded'][i] = np.array(dataset['data']['_embedded'][i])
 		if verbose: print('done')
 
 def vqa_subset(vqa_file, output_file=None, force=False, abstract=False, real=False, 

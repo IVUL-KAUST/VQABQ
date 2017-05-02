@@ -91,6 +91,7 @@ class VQAEvaluator(object):
 				result[i] = {'question_id':d['question_id'], 'answer':answer}
 			except:	
 				skipped += 1
+				result[i] = {'question_id':d['question_id'], 'answer':'NOTGIVENTON'}
 				print('skipped question at index #'+str(i))
 		print('finished '+str(i+1-skipped)+' questions and skipped '+str(skipped)+' questions')
 		return result

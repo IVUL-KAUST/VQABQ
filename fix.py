@@ -1,6 +1,7 @@
 import json
 
-original_dataset = './data/OpenEnded_mscoco_test-dev2015_questions.json'
+#original_dataset = './data/OpenEnded_mscoco_test-dev2015_questions.json'
+original_dataset = './data/questions/vqa_v1/Real Images/Questions_Test_mscoco/OpenEnded_mscoco_test2015_questions.json'
 
 def get(file):
 	with open(file, 'r') as f:
@@ -51,4 +52,5 @@ def check(data):
 #fix('data/devtest/dev_test2015_answers_7_11.json')
 #fix('data/devtest/dev_test2015_answers_7_12.json')
 #fix('data/devtest/dev_test2015_answers_7_Residual_12.json')
-fix('data/devtest/dev_test2015_answers_7_Residual_0.json')
+#fix('data/devtest/dev_test2015_answers_7_Residual_0.json')
+fix('data/test/vqa_OpenEnded_mscoco_test2015_7_VGG_12_results.json')
